@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     }
 
     // Make a POST request to the external API to fetch projects
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/api/projects/getAllProjects', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/api/projects/getAllProjects', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ const authOptions: AuthOptions = {
       async authorize(credentials, req) {
         try {
           // Send POST request to the sign-in API
-          const apiResponse = await fetch('https://fab-team-services.xyz:8089/signIn', {
+          const apiResponse = await fetch('https://fab-team-services.xyz/signIn', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     // Make a POST request to the external API to add the project
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/api/projects/addProject', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/api/projects/addProject', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

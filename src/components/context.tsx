@@ -63,7 +63,7 @@ export const AppContext = React.createContext<{
   handleSaveProjectTitle: () => { },
   changeCurrentProject: () => { },
   fetchProjectsByUserId: () => { },
-  clearChat: () => {}
+  clearChat: () => { }
 });
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -101,8 +101,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setCurrentProject(
           {
             title: "temp",
-            userId: "0",
-            id: "0",
+            userId: null,
+            id: null,
             prompts: [],
             mermaid: mermaid,
             elements: ele
@@ -126,21 +126,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
 
       try {
-        const response = await fetch('/api/projects/saveMermaid', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            projectId: id,
-            mermaid: mermaid,
-          }),
-        });
+        if (currentProject && currentProject.id && currentProject.userId && currentProject.id !== "0") {
+          const response = await fetch('/api/projects/saveMermaid', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              projectId: id,
+              mermaid: mermaid,
+            }),
+          });
 
-        if (!response.ok) {
-          console.error('Failed to update mermaid:', response.statusText);
-        } else {
-          console.log('Mermaid data updated successfully.');
+          if (!response.ok) {
+            console.error('Failed to update mermaid:', response.statusText);
+          } else {
+            console.log('Mermaid data updated successfully.');
+          }
         }
       } catch (error) {
         console.error('Error updating mermaid:', error);
@@ -181,30 +183,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return updatedPrompts;
     });
 
-    if (updatedPrompts.length === 3 && currentProject) {
+    if (updatedPrompts.length === 3 && currentProject && currentProject.id) {
       const myUUID = uuidv4();
 
       const newProjectTitle = await getProjectTitle(updatedPrompts, currentProject.id, myUUID);
 
       handleSaveProjectTitle(currentProject.id, currentProject.userId, newProjectTitle)
-      // console.log("NEWPROJECTTITLE", newProjectTitle)
-      // if (newProjectTitle) {
-
-      //   setProjects((prevProjects: any) =>
-      //     prevProjects.map((project: any) =>
-      //       project.id === currentProject?.id
-      //         ? { ...project, title: newProjectTitle }
-      //         : project
-      //     )
-      //   );
-      // }
     }
   };
 
 
   const saveUpdatedPrompts = async (latestPrompts: Prompt[]) => {
     try {
-      if (currentProject) {
+      if (currentProject && currentProject.id && currentProject.userId) {
         const response = await fetch('/api/projects/savePrompt', {
           method: 'POST',
           headers: {
@@ -240,10 +231,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Generate a temporary id for the project (could be a UUID or a simple placeholder)
     const tempId = `temp-${Date.now()}`;
     const tempProject = { ...project, id: tempId };
-  
+
     // Add the project with a temporary id to the state
     setProjects((prevProjects) => [tempProject, ...prevProjects]);
-  
+
     try {
       const response = await fetch('/api/projects/addProject', {
         method: 'POST',
@@ -257,21 +248,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           mermaid: project.mermaid,
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         const newProjectId: any = data.project.project_id;
-  
+
         // Replace the temporary id with the new project_id from the API response
         const updatedProject = { ...project, id: `${newProjectId}` };
-  
+
         // Update the project in the state with the correct id
         setProjects((prevProjects) =>
           prevProjects.map((proj) =>
             proj.id === tempId ? updatedProject : proj
           )
         );
-  
+
         changeCurrentProject(updatedProject);
       } else {
         console.error('Failed to add project:', response.statusText);
@@ -299,22 +290,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
 
     try {
-      const response = await fetch('/api/projects/renameProjectTitle', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ projectId, userId, newTitle: trimmedTitle }),
-      });
+      if (currentProject && currentProject.id && currentProject.userId) {
+        const response = await fetch('/api/projects/renameProjectTitle', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ projectId, userId, newTitle: trimmedTitle }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error updating project title:', errorData.error);
-        setProjects((prevProjects) =>
-          prevProjects.map((project) =>
-            project.id === projectId ? { ...project, title: project.title, edit: true } : project
-          )
-        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Error updating project title:', errorData.error);
+          setProjects((prevProjects) =>
+            prevProjects.map((project) =>
+              project.id === projectId ? { ...project, title: project.title, edit: true } : project
+            )
+          );
+        }
       }
     } catch (error) {
       console.error('Error updating project title:', error);

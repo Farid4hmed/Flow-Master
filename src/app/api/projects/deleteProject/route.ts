@@ -15,7 +15,7 @@ export async function DELETE(request: Request) {
     }
 
     // Make a DELETE request to the external API
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/api/projects/deleteProject', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/api/projects/deleteProject', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

@@ -7,7 +7,7 @@ export async function POST(request: Request) {
 
 
     // Make an API call to the Postman API for registration
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/register', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ export async function PATCH(request: Request) {
     }
 
     // Make a PUT request to the external API to rename the project
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/api/projects/renameProject', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/api/projects/renameProject', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

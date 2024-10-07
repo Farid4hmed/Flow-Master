@@ -30,7 +30,17 @@ const Chatbox: any = (props: any) => {
     addPrompt(newPrompt);
     setSubmitted(true);
     setIsFetchingResponse(true);
-    const chatBotResp = await getChatBotResponse(query, currentProject?.userId, currentProject?.id);
+
+    const userId = localStorage.getItem('userId');
+    const id = localStorage.getItem('id');
+
+    let chatBotResp;
+    if(currentProject?.userId && currentProject.id){
+      chatBotResp = await getChatBotResponse(query, currentProject?.userId, currentProject?.id);
+    }
+    else {
+      chatBotResp = await getChatBotResponse(query, userId, id);
+    }
 
     updatePrompt(textId, { response: chatBotResp?.model_output })
 
@@ -41,7 +51,17 @@ const Chatbox: any = (props: any) => {
 
   const getMermaidCodeResponse = async () => {
     props.setIsLoading(true);
-    let response = await getMermaidCode(currentProject?.userId, currentProject?.id);
+    let response;
+
+    const userId = localStorage.getItem('userId');
+    const id = localStorage.getItem('id');
+
+    if(currentProject?.userId, currentProject?.id){
+      response = await getMermaidCode(currentProject?.userId, currentProject?.id);
+    }
+    else {
+      response = await getMermaidCode(userId, id);
+    }
 
     let mermaidCode = response;
     mermaidCode = cleanMermaidInput(mermaidCode);

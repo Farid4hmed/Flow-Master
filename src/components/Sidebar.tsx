@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { v4 as uuidv4 } from 'uuid';
 
 const AppWrapper = dynamic(() => import('@/components/excalidraw/appWrapper'), {
   ssr: false, // Disable server-side rendering for this component
@@ -101,10 +102,21 @@ export function SidebarWrapper({ children, ...props }: any) {
   };
 
   useEffect(() => {
-    if (session) {
-      fetchProjectsByUserId(session.userId)
+    const userId = localStorage.getItem('userId');
+    const id = localStorage.getItem('id');
+    
+    // Check if userId or id are null, generate and store them if necessary
+    if (!userId || !id) {
+      const newUserId = uuidv4();
+      const newId = uuidv4();
+      localStorage.setItem('userId', newUserId);
+      localStorage.setItem('id', newId);
     }
-  }, [])
+  
+    if (session) {
+      fetchProjectsByUserId(session.userId);
+    }
+  }, [session]);
 
 
   return (

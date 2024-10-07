@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     // Make a PUT request to the external API to update the prompts
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/api/projects/savePrompt', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/api/projects/savePrompt', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

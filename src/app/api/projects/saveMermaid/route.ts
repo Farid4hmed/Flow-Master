@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     // Make a PUT request to the external API to save the Mermaid diagram
-    const apiResponse = await fetch('https://fab-team-services.xyz:8089/api/projects/saveMermaid', {
+    const apiResponse = await fetch('https://fab-team-services.xyz/api/projects/saveMermaid', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
